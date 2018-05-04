@@ -1,0 +1,6 @@
+Hola!
+
+Este correo ha sido enviado desde un servidor que automatiza el proceso de respaldo de base de datos. 
+En los archivos adjuntos podrás encontrar el archivo .sql que contiene el script de base de datos y un archivo de registro .log
+Que tengas un excelente día.
+Saludos.
