@@ -1,0 +1,102 @@
+# Primeramente deberás realizar las siguientes configuraciones:
+
+sudo apt-get update
+
+sudo apt-get install postfix
+
+# Editar el archivo main.cf
+
+sudo nano /etc/postfix/main.cf
+
+# El cual deberá mostrarse de la siguiente manera:
+
+--------------------------------------------------------------------------------------------------------------------
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+
+# Debian specific:  Specifying a file name will cause the first
+# line of that file to be used as the name.  The Debian default
+# is /etc/mailname.
+#myorigin = /etc/mailname
+
+smtpd_banner = $myhostname ESMTP $mail_name (Ubuntu)
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+readme_directory = no
+
+# TLS parameters
+smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_use_tls=yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+# information on enabling SSL in the smtp client.
+
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+myhostname = localhost
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+mydestination = $myhostname, localhost.$mydomain, $mydomain
+relayhost = [smtp.gmail.com]:587
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = loopback-only
+inet_protocols = all
+
+--------------------------------------------------------------------------------------------------------------------
+
+# Reiniciar el servicio de postfix
+
+sudo service postfix restart
+
+# Instalar mailutils
+
+sudo apt-get install mailutils
+
+# Instalar ssmtp
+
+sudo apt-get install ssmtp
+
+# Editar el archivo de configuración de SSMTP
+
+sudo nano /etc/ssmtp/ssmtp.conf
+
+# Configurar de la siguiente manera
+
+--------------------------------------------------------------------------------------------------------------------
+
+#
+# Config file for sSMTP sendmail
+#
+# The person who gets all mail for userids < 1000
+# Make this empty to disable rewriting.
+root=correo_remitente@gmail.com
+
+# The place where the mail goes. The actual machine name is required no
+# MX records are consulted. Commonly mailhosts are named mail.domain.com
+mailhub=smtp.gmail.com:587
+AuthUser=correo_remitente@gmail.com
+AuthPass=contraseña
+UseTLS=YES
+UseSTARTTLS=YES
+
+# Where will the mail seem to come from?
+rewriteDomain=gmail.com
+
+# The full hostname
+hostname=localhost
+
+# Are users allowed to set their own From: address?
+# YES - Allow the user to specify their own From: address
+# NO - Use the system generated From: address
+FromLineOverride=YES
+#TLS_CA_File=/etc/ssl/certs/ca-certificates.crt
